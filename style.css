@@ -1,0 +1,117 @@
+:root{
+  --tinta:#17221f;
+  --verde:#0d6b5e;
+  --verde-esc:#0a5248;
+  --fundo:#eef1ee;
+  --papel:#fbfcfb;
+  --linha:#cdd6d1;
+  --mudo:#58665f;
+  --fita:#f4c430;
+  --erro:#b3322a;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:"Instrument Sans",system-ui,sans-serif;background:var(--fundo);color:var(--tinta);line-height:1.55;font-size:16px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--fita);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* topo */
+.topo{background:var(--papel);border-bottom:1px solid var(--linha);position:sticky;top:0;z-index:10}
+.topo .wrap{display:flex;justify-content:space-between;align-items:center;height:58px}
+.marca{font-weight:700;font-size:1.25rem;text-decoration:none;letter-spacing:-.01em}
+.topo nav{display:flex;gap:22px}
+.topo nav a{text-decoration:none;font-size:.95rem;color:var(--mudo)}
+.topo nav a:hover{color:var(--tinta)}
+
+/* abertura */
+.abertura{display:grid;grid-template-columns:1fr 440px;gap:48px;padding-top:48px;padding-bottom:48px;align-items:start}
+h1{font-size:clamp(2rem,4.6vw,3.2rem);line-height:1.08;letter-spacing:-.025em;font-weight:700;max-width:15ch}
+.texto p{margin-top:18px;max-width:46ch;color:var(--mudo);font-size:1.06rem}
+.texto .aviso{color:var(--tinta);font-size:.95rem;border-left:4px solid var(--fita);padding-left:12px}
+
+/* formulário */
+.caixa{background:var(--papel);border:1px solid var(--linha);border-radius:6px;padding:24px}
+.caixa h2{font-size:1.25rem;margin-bottom:6px}
+.campo{margin-top:14px}
+.duas{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:.88rem;font-weight:600;margin-bottom:5px}
+.opc{font-weight:400;color:var(--mudo)}
+input,select,textarea{width:100%;font:inherit;color:inherit;background:#fff;border:1px solid #9aa7a1;border-radius:4px;padding:10px 11px}
+input:focus,select:focus,textarea:focus{border-color:var(--verde);outline:2px solid var(--verde);outline-offset:0}
+textarea{resize:vertical}
+.erro{display:block;color:var(--erro);font-size:.82rem;min-height:1em;margin-top:3px}
+.campo.invalido input,.campo.invalido select{border-color:var(--erro)}
+
+.estimativa{margin-top:16px;background:#fff8dc;border:1px dashed #b89a1e;border-radius:4px;padding:12px 14px;font-size:.93rem}
+.estimativa .total{font-size:1.35rem;font-weight:700;display:block}
+.estimativa .det{color:var(--mudo);font-size:.85rem}
+
+.botao{display:inline-block;margin-top:16px;background:var(--verde);color:#fff;border:0;border-radius:4px;font:600 1rem inherit;font-family:inherit;padding:12px 20px;cursor:pointer}
+.botao:hover{background:var(--verde-esc)}
+.botao.sec{background:transparent;color:var(--verde);border:1px solid var(--verde)}
+.botao.sec:hover{background:#e3eeeb}
+.caixa form .botao{width:100%}
+.confirmado h3{font-size:1.2rem;margin-top:8px}
+.confirmado p{margin-top:8px}
+.proto{font-size:1.2rem;background:var(--fita);padding:1px 8px;border-radius:3px}
+.acoes{display:flex;gap:10px;flex-wrap:wrap}
+
+/* blocos */
+.bloco{padding-top:44px;padding-bottom:44px;border-top:1px solid var(--linha)}
+.bloco h2{font-size:1.6rem;letter-spacing:-.015em}
+.sub{color:var(--mudo);margin:8px 0 22px;max-width:60ch}
+.tabela-box{overflow-x:auto;background:var(--papel);border:1px solid var(--linha);border-radius:6px}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--linha)}
+th{font-size:.85rem;color:var(--mudo);font-weight:600;background:#f3f6f4}
+tr:last-child td{border-bottom:0}
+td:nth-child(2){font-variant-numeric:tabular-nums;white-space:nowrap}
+.nota{margin-top:12px;font-size:.9rem;color:var(--mudo)}
+
+.passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:28px;margin-top:20px}
+.passos dt{font-weight:700;margin-bottom:4px}
+.passos dd{margin:0;color:var(--mudo);font-size:.95rem}
+
+/* acompanhar */
+.busca{display:flex;gap:10px;max-width:420px;margin-top:16px}
+.busca input{text-transform:uppercase}
+.busca .botao{margin-top:0}
+#e-busca{margin-top:8px}
+#status{margin-top:20px;background:var(--papel);border:1px solid var(--linha);border-radius:6px;padding:22px;max-width:620px}
+.resumo{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--linha)}
+.resumo strong{font-size:1.1rem}
+.resumo p{color:var(--mudo);font-size:.92rem}
+.linha{list-style:none;padding:0}
+.linha li{position:relative;padding:0 0 16px 30px;color:var(--mudo)}
+.linha li::before{content:"";position:absolute;left:0;top:4px;width:16px;height:16px;border-radius:50%;border:2px solid var(--linha);background:#fff}
+.linha li::after{content:"";position:absolute;left:7px;top:22px;bottom:-4px;width:2px;background:var(--linha)}
+.linha li:last-child{padding-bottom:0}
+.linha li:last-child::after{display:none}
+.linha li.feito{color:var(--tinta)}
+.linha li.feito::before{background:var(--verde);border-color:var(--verde)}
+.linha li.feito::after{background:var(--verde)}
+.linha li.atual{color:var(--tinta);font-weight:600}
+.linha li.atual::before{border-color:var(--verde);background:var(--fita)}
+.linha small{display:block;font-weight:400;color:var(--mudo);font-size:.82rem}
+#recentes{margin-top:26px}
+#recentes h3{font-size:1rem;margin-bottom:8px}
+#lista-recentes{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+#lista-recentes button{font:inherit;background:var(--papel);border:1px solid var(--linha);border-radius:4px;padding:6px 12px;cursor:pointer}
+#lista-recentes button:hover{border-color:var(--verde)}
+
+.rodape{border-top:1px solid var(--linha);padding:26px 0;color:var(--mudo);font-size:.9rem}
+.rodape .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap}
+.rodape strong{color:var(--tinta)}
+
+@media(max-width:900px){
+  .abertura{grid-template-columns:1fr;gap:28px}
+  h1{max-width:none}
+}
+@media(max-width:560px){
+  .topo nav{gap:14px}
+  .topo nav a{font-size:.88rem}
+  .duas{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

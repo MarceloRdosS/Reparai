@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reparaí – Conserto de computador com busca e entrega em casa</title>
+<meta name="description" content="Peça a coleta do seu computador ou notebook, acompanhe o conserto e receba em casa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topo">
+  <div class="wrap">
+    <a class="marca" href="#inicio">Reparaí</a>
+    <nav aria-label="Principal">
+      <a href="#pedido">Pedir coleta</a>
+      <a href="#precos">Preços</a>
+      <a href="#acompanhar">Acompanhar</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="abertura wrap">
+    <div class="texto">
+      <h1>Seu computador consertado sem você sair de casa.</h1>
+      <p>A gente busca o equipamento, leva para uma assistência técnica parceira e devolve funcionando. Você vê o preço antes de pedir e acompanha cada etapa.</p>
+      <p class="aviso">Atendemos o Rio de Janeiro e a Baixada. Coleta em até 24 horas úteis.</p>
+    </div>
+
+    <div class="caixa" id="pedido">
+      <h2>Pedir coleta</h2>
+      <form id="form" novalidate>
+        <div class="campo">
+          <label for="nome">Nome</label>
+          <input id="nome" name="nome" autocomplete="name">
+          <small class="erro" id="e-nome"></small>
+        </div>
+        <div class="campo">
+          <label for="zap">WhatsApp</label>
+          <input id="zap" name="zap" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999">
+          <small class="erro" id="e-zap"></small>
+        </div>
+        <div class="duas">
+          <div class="campo">
+            <label for="equip">Equipamento</label>
+            <select id="equip" name="equip"></select>
+            <small class="erro" id="e-equip"></small>
+          </div>
+          <div class="campo">
+            <label for="servico">O que precisa?</label>
+            <select id="servico" name="servico"></select>
+            <small class="erro" id="e-servico"></small>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="endereco">Endereço de coleta</label>
+          <input id="endereco" name="endereco" autocomplete="street-address" placeholder="Rua, número, bairro">
+          <small class="erro" id="e-endereco"></small>
+        </div>
+        <div class="duas">
+          <div class="campo">
+            <label for="data">Dia da coleta</label>
+            <input type="date" id="data" name="data">
+            <small class="erro" id="e-data"></small>
+          </div>
+          <div class="campo">
+            <label for="turno">Horário</label>
+            <select id="turno" name="turno">
+              <option>Manhã (8h–12h)</option>
+              <option>Tarde (13h–18h)</option>
+            </select>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="obs">Detalhes do problema <span class="opc">(opcional)</span></label>
+          <textarea id="obs" name="obs" rows="3"></textarea>
+        </div>
+
+        <div class="estimativa" id="estimativa" aria-live="polite"></div>
+        <button class="botao" type="submit">Confirmar pedido</button>
+      </form>
+
+      <div class="confirmado" id="confirmado" hidden>
+        <h3>Pedido confirmado</h3>
+        <p>Seu protocolo é <strong class="proto" id="proto"></strong>. Guarde esse código para acompanhar o conserto.</p>
+        <div class="acoes">
+          <button class="botao" id="ver" type="button">Acompanhar agora</button>
+          <button class="botao sec" id="outro" type="button">Fazer outro pedido</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco wrap" id="precos">
+    <h2>Preços</h2>
+    <p class="sub">Valores estimados por serviço. O preço final é confirmado depois do diagnóstico e só segue com a sua aprovação.</p>
+    <div class="tabela-box">
+      <table>
+        <thead><tr><th>Serviço</th><th>Valor estimado</th><th>Prazo</th></tr></thead>
+        <tbody id="tabela"></tbody>
+      </table>
+    </div>
+    <p class="nota" id="nota-frete"></p>
+  </section>
+
+  <section class="bloco wrap" id="como">
+    <h2>Como funciona</h2>
+    <dl class="passos">
+      <div><dt>Você pede</dt><dd>Escolhe o serviço, vê a estimativa e marca o dia da coleta.</dd></div>
+      <div><dt>Buscamos</dt><dd>Um entregador retira o equipamento embalado na sua porta.</dd></div>
+      <div><dt>Diagnóstico</dt><dd>A assistência avalia e confirma o valor com você.</dd></div>
+      <div><dt>Devolvemos</dt><dd>Depois do conserto, o equipamento volta para o seu endereço.</dd></div>
+    </dl>
+  </section>
+
+  <section class="bloco wrap" id="acompanhar">
+    <h2>Acompanhar pedido</h2>
+    <form class="busca" id="busca">
+      <label for="cod" class="sr">Protocolo</label>
+      <input id="cod" placeholder="Ex.: RP-4821" autocapitalize="characters">
+      <button class="botao" type="submit">Buscar</button>
+    </form>
+    <p class="erro" id="e-busca"></p>
+    <div id="status" hidden>
+      <div class="resumo" id="resumo"></div>
+      <ol class="linha" id="linha"></ol>
+    </div>
+    <div id="recentes" hidden>
+      <h3>Seus pedidos neste aparelho</h3>
+      <ul id="lista-recentes"></ul>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div class="wrap">
+    <strong>Reparaí</strong>
+    <span>Atendimento: seg a sex, 8h às 18h · contato@reparai.com.br</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
