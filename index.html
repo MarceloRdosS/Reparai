@@ -3,146 +3,435 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reparaí – Conserto de computador com busca e entrega em casa</title>
-<meta name="description" content="Peça a coleta do seu computador ou notebook, acompanhe o conserto e receba em casa.">
+<title>Reparaí – Conserto de Computadores via App</title>
+<meta name="description" content="Peça uma análise, buscamos o seu computador na sua casa e nós consertamos no laboratório.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="topo">
-  <div class="wrap">
-    <a class="marca" href="#inicio">Reparaí</a>
-    <nav aria-label="Principal">
-      <a href="#pedido">Pedir coleta</a>
-      <a href="#precos">Preços</a>
-      <a href="#acompanhar">Acompanhar</a>
+<header class="topo-premium">
+  <div class="wrap topo-flex">
+    <a class="marca-app" href="#inicio">
+      <div class="logo-box">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <span>Reparaí</span>
+    </a>
+    <nav aria-label="Principal" class="nav-links">
+      <a href="#pedir" class="nav-item">Serviços</a>
+      <a href="#acompanhar" class="nav-item">Rastreio</a>
     </nav>
+    <div class="nav-actions" id="header-actions">
+      <!-- Auth state handled by JS -->
+    </div>
   </div>
 </header>
 
 <main id="inicio">
-  <section class="abertura wrap">
-    <div class="texto">
-      <h1>Seu computador consertado sem você sair de casa.</h1>
-      <p>A gente busca o equipamento, leva para uma assistência técnica parceira e devolve funcionando. Você vê o preço antes de pedir e acompanha cada etapa.</p>
-      <p class="aviso">Atendemos o Rio de Janeiro e a Baixada. Coleta em até 24 horas úteis.</p>
+  <section class="hero-premium">
+    <div class="hero-bg"></div>
+    <div class="wrap hero-content fade-up">
+      <span class="badge-premium">Novo no Rio de Janeiro</span>
+      <h1>Seu PC parou?<br><span class="text-gradient">A gente busca na sua porta.</span></h1>
+      <p class="hero-subtitle">Esqueça o trabalho de carregar peso. Solicite uma análise e nós combinamos a coleta do seu equipamento com segurança para o nosso laboratório avançado.</p>
+      
+      <div class="hero-botoes">
+        <a href="#pedir" class="btn-primary-lg shadow-pulse">Solicitar Coleta</a>
+        <a href="#como-funciona" class="btn-secondary-lg">Como funciona?</a>
+      </div>
+      
+      <div class="trust-indicators">
+        <div class="trust-item"><span class="trust-icon">✓</span> Pagamento Seguro</div>
+        <div class="trust-item"><span class="trust-icon">✓</span> Atendimento via WhatsApp</div>
+        <div class="trust-item"><span class="trust-icon">✓</span> Coleta em Domicílio</div>
+      </div>
     </div>
+  </section>
 
-    <div class="caixa" id="pedido">
-      <h2>Pedir coleta</h2>
-      <form id="form" novalidate>
-        <div class="campo">
-          <label for="nome">Nome</label>
-          <input id="nome" name="nome" autocomplete="name">
-          <small class="erro" id="e-nome"></small>
+  <section id="como-funciona" class="features-section wrap fade-up delay-1">
+    <div class="section-header">
+      <h2>Simples como pedir comida.</h2>
+      <p>Um fluxo otimizado para você ter seu equipamento de volta o mais rápido possível.</p>
+    </div>
+    
+    <div class="cards-grid">
+      <div class="feature-card">
+        <div class="card-icon bg-red">1</div>
+        <h3>Peça a Análise</h3>
+        <p>Você informa os sintomas do aparelho e seu endereço em 1 minuto.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon bg-red">2</div>
+        <h3>Coleta Segura</h3>
+        <p>Combinamos a retirada do equipamento na sua casa de forma prática e rápida.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon bg-red">3</div>
+        <h3>Orçamento & Conserto</h3>
+        <p>Técnicos especializados avaliam e consertam após a sua aprovação no WhatsApp.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon bg-red">4</div>
+        <h3>Entrega Rápida</h3>
+        <p>O equipamento retorna funcionando perfeitamente direto para as suas mãos.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pedido-section wrap fade-up delay-2" id="pedir">
+    <div class="checkout-container">
+      
+      <!-- Blocked State (Not Logged In) -->
+      <div id="auth-block" class="auth-block text-center mt-4">
+        <div class="lock-icon" style="color: var(--primary); margin-bottom: 15px;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
         </div>
-        <div class="campo">
-          <label for="zap">WhatsApp</label>
-          <input id="zap" name="zap" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999">
-          <small class="erro" id="e-zap"></small>
-        </div>
-        <div class="duas">
-          <div class="campo">
-            <label for="equip">Equipamento</label>
-            <select id="equip" name="equip"></select>
-            <small class="erro" id="e-equip"></small>
+        <h3>Faça login para continuar</h3>
+        <p>Para sua segurança e para armazenar seus pedidos, você precisa entrar na sua conta.</p>
+        <button class="btn-primary-lg mt-4" id="btn-open-login" type="button">Entrar ou Cadastrar</button>
+      </div>
+
+      <!-- Form State (Logged In) -->
+      <form id="form" class="modern-form" novalidate autocomplete="on" hidden>
+        <!-- Anti-CSRF Token Placeholder for Security -->
+        <input type="hidden" name="csrf_token" value="secure_token_placeholder">
+        
+        <div id="step-1">
+          <div class="checkout-header">
+            <h2>Solicite sua coleta</h2>
+            <p>Preencha os dados abaixo com segurança.</p>
           </div>
-          <div class="campo">
-            <label for="servico">O que precisa?</label>
-            <select id="servico" name="servico"></select>
-            <small class="erro" id="e-servico"></small>
+        <div class="form-row mt-4">
+          <div class="input-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" autocomplete="name" placeholder="Ex: João da Silva" maxlength="80" required>
+            <span class="erro-msg" id="e-nome"></span>
+          </div>
+          <div class="input-group">
+            <label for="zap">WhatsApp</label>
+            <input type="tel" id="zap" name="zap" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999" maxlength="15" required>
+            <span class="erro-msg" id="e-zap"></span>
           </div>
         </div>
-        <div class="campo">
-          <label for="endereco">Endereço de coleta</label>
-          <input id="endereco" name="endereco" autocomplete="street-address" placeholder="Rua, número, bairro">
-          <small class="erro" id="e-endereco"></small>
-        </div>
-        <div class="duas">
-          <div class="campo">
-            <label for="data">Dia da coleta</label>
-            <input type="date" id="data" name="data">
-            <small class="erro" id="e-data"></small>
+        
+        <div class="input-group mt-4">
+          <label>Qual aparelho precisa de conserto?</label>
+          <div class="radio-selector">
+            <label class="radio-card">
+              <input type="radio" name="equip" value="Notebook">
+              <div class="rc-content">
+                <span class="rc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></span>
+                <span class="rc-text">Notebook</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="equip" value="Computador">
+              <div class="rc-content">
+                <span class="rc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="21" x2="22" y2="21"></line></svg></span>
+                <span class="rc-text">PC / Desktop</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="equip" value="Placa de Vídeo">
+              <div class="rc-content">
+                <span class="rc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg></span>
+                <span class="rc-text">Hardware</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="equip" value="Outro">
+              <div class="rc-content">
+                <span class="rc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>
+                <span class="rc-text">Outro</span>
+              </div>
+            </label>
           </div>
-          <div class="campo">
-            <label for="turno">Horário</label>
-            <select id="turno" name="turno">
-              <option>Manhã (8h–12h)</option>
-              <option>Tarde (13h–18h)</option>
-            </select>
-          </div>
-        </div>
-        <div class="campo">
-          <label for="obs">Detalhes do problema <span class="opc">(opcional)</span></label>
-          <textarea id="obs" name="obs" rows="3"></textarea>
+          <span class="erro-msg" id="e-equip"></span>
         </div>
 
-        <div class="estimativa" id="estimativa" aria-live="polite"></div>
-        <button class="botao" type="submit">Confirmar pedido</button>
+        <div class="input-group mt-4">
+          <label for="obs">Relato do problema (seja específico)</label>
+          <!-- Fixed Textarea Bug -->
+          <textarea id="obs" name="obs" rows="3" placeholder="Ex: A tela liga mas fica preta, o teclado não responde..." maxlength="500"></textarea>
+        </div>
+        
+        <div class="input-group mt-4">
+          <label for="endereco">Endereço de Coleta (Marque no mapa ou digite)</label>
+          <div id="mapa-coleta" style="height: 250px; width: 100%; border-radius: 12px; margin-bottom: 12px; border: 2px solid var(--border); z-index:1;"></div>
+          <input type="text" id="endereco" name="endereco" autocomplete="street-address" placeholder="Ex: Rua João, 123, Bairro" maxlength="150" required>
+          <span class="erro-msg" id="e-endereco"></span>
+        </div>
+        
+        <div class="checkout-summary mt-4" id="estimativa">
+          <div class="summary-line">
+            <span>Análise Laboratorial</span>
+            <span>R$ 40,00</span>
+          </div>
+          <div class="summary-line">
+            <span>Logística (Ida e Volta)</span>
+            <span>R$ 35,00</span>
+          </div>
+          <div class="summary-total">
+            <span>Total Inicial</span>
+            <span>R$ 75,00</span>
+          </div>
+          <p class="summary-note">O valor final do conserto será enviado para aprovação após a análise.</p>
+        </div>
+
+        <div id="step-1-actions">
+          <button class="btn-submit mt-4" type="button" id="btn-next">
+            <span class="btn-text">Próxima Etapa</span>
+            <svg class="btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </div>
+      </div> <!-- End Step 1 -->
+
+      <!-- Step 2: Image Upload -->
+      <div id="step-2" hidden>
+        <div class="checkout-header mt-4">
+          <h2>Etapa 2: Foto do Equipamento</h2>
+          <p>Para sua segurança e futura análise, por favor, envie uma ou mais fotos do aparelho no estado atual.</p>
+        </div>
+        
+        <div class="input-group mt-4">
+          <label class="file-upload-box" id="drop-zone" for="foto-equipamento">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px; color:var(--primary);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span id="file-name-display">Arraste fotos aqui ou clique para selecionar</span>
+          </label>
+          <input type="file" id="foto-equipamento" name="foto-equipamento" accept="image/*" multiple style="display:none;">
+          <div id="image-previews" class="image-previews-container"></div>
+          <span class="erro-msg" id="e-foto"></span>
+        </div>
+
+        <div style="display:flex; gap:16px;" class="mt-4">
+          <button class="btn-secondary-lg" type="button" id="btn-back" style="flex:1; padding:18px;">Voltar</button>
+          <button class="btn-submit" type="submit" id="btn-submit" style="flex:2;">
+            <span class="btn-text">Confirmar Pedido Seguro</span>
+            <svg class="btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
+        </div>
+      </div> <!-- End Step 2 -->
       </form>
 
-      <div class="confirmado" id="confirmado" hidden>
-        <h3>Pedido confirmado</h3>
-        <p>Seu protocolo é <strong class="proto" id="proto"></strong>. Guarde esse código para acompanhar o conserto.</p>
-        <div class="acoes">
-          <button class="botao" id="ver" type="button">Acompanhar agora</button>
-          <button class="botao sec" id="outro" type="button">Fazer outro pedido</button>
+      <!-- Sucesso State -->
+      <div class="sucesso-container" id="confirmado" hidden>
+        <div class="check-animation">
+          <svg viewBox="0 0 52 52">
+            <circle class="circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+        <h3>Tudo Certo!</h3>
+        <p>Seu pedido foi registrado com sucesso.</p>
+        <div class="protocol-box">
+          <span>Acompanhamento:</span>
+          <strong>WhatsApp</strong>
+        </div>
+        <p class="sucesso-instrucao">A janela do seu WhatsApp será aberta. Envie a mensagem para finalizarmos o agendamento da coleta.</p>
+        <div class="sucesso-actions">
+          <button class="btn-secondary-lg" id="outro" type="button">Fazer Novo Pedido</button>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="bloco wrap" id="precos">
-    <h2>Preços</h2>
-    <p class="sub">Valores estimados por serviço. O preço final é confirmado depois do diagnóstico e só segue com a sua aprovação.</p>
-    <div class="tabela-box">
-      <table>
-        <thead><tr><th>Serviço</th><th>Valor estimado</th><th>Prazo</th></tr></thead>
-        <tbody id="tabela"></tbody>
-      </table>
+  <section class="instrucoes-section wrap fade-up delay-2" id="instrucoes-envio" hidden>
+    <div class="instrucoes-container">
+      <div class="instrucoes-header">
+        <h2>Como preparar seu pacote?</h2>
+        <p>Instruções importantes antes de entregá-lo para a nossa coleta.</p>
+      </div>
+      <div class="instrucoes-grid">
+        <div class="inst-item">
+          <div class="inst-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div>
+          <h4>Embale Bem</h4>
+          <p>Use uma caixa de papelão firme ou enrole em bastante plástico bolha/pano grosso para evitar impactos.</p>
+        </div>
+        <div class="inst-item">
+          <div class="inst-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+          <h4>Só o Essencial</h4>
+          <p>Não mande cabos, mouse ou teclado, a menos que o problema seja justamente neles. Menos itens = mais segurança.</p>
+        </div>
+        <div class="inst-item">
+          <div class="inst-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
+          <h4>A Foto já foi!</h4>
+          <p>Você enviou a foto no passo anterior. Nós a guardaremos nos nossos registros de segurança.</p>
+        </div>
+        <div class="inst-item">
+          <div class="inst-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg></div>
+          <h4>Identifique</h4>
+          <p>Escreva o seu Nome e o número do Protocolo num papel e cole do lado de fora da caixa/sacola.</p>
+        </div>
+      </div>
     </div>
-    <p class="nota" id="nota-frete"></p>
   </section>
 
-  <section class="bloco wrap" id="como">
-    <h2>Como funciona</h2>
-    <dl class="passos">
-      <div><dt>Você pede</dt><dd>Escolhe o serviço, vê a estimativa e marca o dia da coleta.</dd></div>
-      <div><dt>Buscamos</dt><dd>Um entregador retira o equipamento embalado na sua porta.</dd></div>
-      <div><dt>Diagnóstico</dt><dd>A assistência avalia e confirma o valor com você.</dd></div>
-      <div><dt>Devolvemos</dt><dd>Depois do conserto, o equipamento volta para o seu endereço.</dd></div>
-    </dl>
+  <section class="tracker-section wrap fade-up delay-3" id="acompanhar">
+    <div class="tracker-container">
+      <div class="tracker-header">
+        <h2>Rastreamento ao vivo</h2>
+        <p>Acompanhe cada etapa do seu aparelho.</p>
+      </div>
+      
+      <form class="search-form" id="busca">
+        <input type="text" id="cod" placeholder="Código (Ex: RP-1234)" autocapitalize="characters" maxlength="10">
+        <button class="btn-search" type="submit">Localizar</button>
+      </form>
+      <span class="erro-msg text-center" id="e-busca"></span>
+      
+      <div id="status" class="status-box" hidden>
+        <div class="status-info" id="resumo"></div>
+        <div class="timeline" id="linha"></div>
+      </div>
+      
+      <div id="recentes" class="recentes-box" hidden>
+        <span class="recentes-title">Buscas recentes:</span>
+        <div id="lista-recentes" class="recentes-chips"></div>
+      </div>
+    </div>
   </section>
 
-  <section class="bloco wrap" id="acompanhar">
-    <h2>Acompanhar pedido</h2>
-    <form class="busca" id="busca">
-      <label for="cod" class="sr">Protocolo</label>
-      <input id="cod" placeholder="Ex.: RP-4821" autocapitalize="characters">
-      <button class="botao" type="submit">Buscar</button>
-    </form>
-    <p class="erro" id="e-busca"></p>
-    <div id="status" hidden>
-      <div class="resumo" id="resumo"></div>
-      <ol class="linha" id="linha"></ol>
+  <section class="mapa-section wrap fade-up delay-4" id="mapa">
+    <div class="section-header">
+      <h2>Área de Cobertura</h2>
+      <p>Nosso laboratório fica em <strong>Campo Grande, RJ</strong>, e fazemos coletas em toda a região metropolitana.</p>
     </div>
-    <div id="recentes" hidden>
-      <h3>Seus pedidos neste aparelho</h3>
-      <ul id="lista-recentes"></ul>
+    <div class="mapa-frame">
+      <!-- Mapa focado em Campo Grande, RJ -->
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117585.50098595701!2d-43.633479606830575!3d-22.92348505500001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9be432f741ad79%3A0xc6c7b949ab235fc5!2sCampo%20Grande%2C%20Rio%20de%20Janeiro%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </section>
+
 </main>
 
-<footer class="rodape">
-  <div class="wrap">
-    <strong>Reparaí</strong>
-    <span>Atendimento: seg a sex, 8h às 18h · contato@reparai.com.br</span>
+<footer class="footer-premium">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="logo-box-footer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <h3>Reparaí</h3>
+      <p>Tecnologia e agilidade para consertar o seu computador de forma transparente e segura, direto da sua casa.</p>
+      
+      <div class="security-badges mt-4">
+        <span class="badge-safe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Site Seguro</span>
+        <span class="badge-safe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Proteção de Dados</span>
+      </div>
+    </div>
+    
+    <div class="footer-links">
+      <h4>Serviços</h4>
+      <a href="#pedir">Pedir Análise</a>
+      <a href="#acompanhar">Rastrear Pedido</a>
+      <a href="#como-funciona">Como Funciona</a>
+      <a href="#mapa">Área de Atendimento</a>
+    </div>
+
+    <div class="footer-contact">
+      <h4>Central de Ajuda</h4>
+      <div class="contact-item">
+        <strong>WhatsApp:</strong> <br> (21) 97240-4109
+      </div>
+      <div class="contact-item">
+        <strong>E-mail:</strong> <br> suporte@reparai.com.br
+      </div>
+      <div class="contact-item">
+        <strong>Horário:</strong> <br> Seg-Sex, 09h às 18h
+      </div>
+    </div>
+  </div>
+  <div class="wrap footer-legal">
+    <p>&copy; 2026 Reparaí Tecnologia LTDA. Todos os direitos reservados.</p>
+    <div class="legal-links">
+      <a href="#">Termos de Uso</a>
+      <a href="#">Privacidade</a>
+    </div>
   </div>
 </footer>
 
+<!-- Modal de Login/Registro -->
+<div class="modal-overlay" id="login-modal" hidden>
+  <div class="modal-content" id="modal-box">
+    <button class="modal-close" id="close-login">&times;</button>
+    <div class="logo-box-modal">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+    </div>
+    
+    <!-- View Login -->
+    <div id="view-login">
+      <h2 id="modal-title">Bem-vindo de volta</h2>
+      <p class="modal-subtitle" id="modal-desc">Acesse sua conta para gerenciar seus pedidos.</p>
+      <form id="form-login">
+        <div class="input-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" required placeholder="seu@email.com">
+        </div>
+        <div class="input-group mt-4">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" required placeholder="••••••••">
+        </div>
+        <button class="btn-submit mt-4" type="submit">Entrar na minha conta</button>
+        <div class="modal-footer-links">
+          <a href="#" id="link-esqueci">Esqueci minha senha</a>
+          <span>•</span>
+          <a href="#" id="link-criar">Criar uma conta</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- View Registro -->
+    <div id="view-registro" hidden>
+      <h2>Crie sua conta</h2>
+      <p class="modal-subtitle">Rápido, fácil e seguro.</p>
+      <form id="form-registro">
+        <div class="input-group">
+          <label for="reg-nome">Nome Completo</label>
+          <input type="text" id="reg-nome" required placeholder="Seu nome">
+        </div>
+        <div class="input-group mt-4">
+          <label for="reg-email">E-mail</label>
+          <input type="email" id="reg-email" required placeholder="seu@email.com">
+        </div>
+        <div class="input-group mt-4">
+          <label for="reg-senha">Criar Senha</label>
+          <input type="password" id="reg-senha" required placeholder="••••••••" minlength="6">
+        </div>
+        <button class="btn-submit mt-4" type="submit">Cadastrar</button>
+        <div class="modal-footer-links">
+          <a href="#" id="link-voltar-login">Já tenho uma conta. Entrar.</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- View Esqueci Senha -->
+    <div id="view-esqueci" hidden>
+      <h2>Recuperar Senha</h2>
+      <p class="modal-subtitle">Enviaremos um link de recuperação para você.</p>
+      <form id="form-esqueci">
+        <div class="input-group">
+          <label for="esq-email">Seu E-mail</label>
+          <input type="email" id="esq-email" required placeholder="seu@email.com">
+        </div>
+        <button class="btn-submit mt-4" type="submit">Enviar Link</button>
+        <div class="modal-footer-links">
+          <a href="#" id="link-voltar-login2">Voltar para o Login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notifications -->
+<div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

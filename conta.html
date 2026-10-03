@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minha Conta – Reparaí</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topo-premium" style="background: white; border-bottom: 1px solid var(--border);">
+  <div class="wrap topo-flex">
+    <a class="marca-app" href="index.html" style="color: var(--text-dark);">
+      <div class="logo-box">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <span>Reparaí</span>
+    </a>
+    <div class="nav-actions" id="header-actions">
+      <!-- Auth state handled by JS -->
+    </div>
+  </div>
+</header>
+
+<main style="padding: 120px 20px 60px; min-height: 80vh; background: #f8fafc;">
+  <div class="wrap" style="max-width: 900px;">
+    
+    <div style="background: white; border-radius: 24px; padding: 40px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 30px;">
+      <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px;">Meus Dados</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">Informações da sua conta.</p>
+      
+      <div style="display: grid; gap: 16px;">
+        <div>
+          <label style="display: block; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">Nome</label>
+          <div id="conta-nome" style="font-size: 1.1rem; font-weight: 500; color: var(--text-dark);">Carregando...</div>
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">E-mail</label>
+          <div id="conta-email" style="font-size: 1.1rem; font-weight: 500; color: var(--text-dark);">Carregando...</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: white; border-radius: 24px; padding: 40px; box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
+      <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px;">Meus Pedidos</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">Acompanhe o status dos seus serviços.</p>
+      
+      <div id="lista-pedidos-conta" style="display: grid; gap: 16px;">
+        <p style="color: var(--text-muted);">Buscando seus pedidos...</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="script.js"></script>
+<script>
+  // Script específico da página de conta
+  async function carregarConta() {
+    const user = JSON.parse(localStorage.getItem('reparai_user'));
+    if(!user) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    document.getElementById('conta-nome').textContent = user.nome;
+    document.getElementById('conta-email').textContent = user.email;
+
+    try {
+      const res = await fetch('/api/pedidos/meus?email=' + encodeURIComponent(user.email));
+      const pedidos = await res.json();
+      
+      const lista = document.getElementById('lista-pedidos-conta');
+      
+      if(pedidos.length === 0) {
+        lista.innerHTML = "<p style='color: var(--text-muted); background: #f8fafc; padding: 20px; border-radius: 12px;'>Você ainda não fez nenhum pedido de coleta.</p>";
+        return;
+      }
+
+      const ETAPAS = [
+        "Aguardando Confirmação",
+        "Coleta a caminho",
+        "Em Análise",
+        "Aguardando Aprovação",
+        "Em Conserto",
+        "Equipamento retornando",
+        "Entregue"
+      ];
+
+      lista.innerHTML = pedidos.map(p => `
+        <div style="border: 1px solid var(--border); padding: 20px; border-radius: 16px; background: #fff; transition: box-shadow 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+            <strong style="font-size: 1.1rem; color: var(--text-dark);">${p.proto}</strong>
+            <span style="background: rgba(230,25,43,0.1); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">${ETAPAS[p.status]}</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <span style="display: block; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Equipamento</span>
+              <span style="color: var(--text-dark); font-weight: 500;">${p.equip}</span>
+            </div>
+            <div>
+              <span style="display: block; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Data</span>
+              <span style="color: var(--text-dark); font-weight: 500;">${new Date(p.criado).toLocaleDateString('pt-BR')}</span>
+            </div>
+            <div style="grid-column: span 2;">
+              <span style="display: block; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Problema Relatado</span>
+              <span style="color: var(--text-dark); font-weight: 500;">${p.obs || 'Não informado'}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+    } catch (err) {
+      document.getElementById('lista-pedidos-conta').innerHTML = "<p style='color: red;'>Erro ao carregar os pedidos. Servidor indisponível.</p>";
+    }
+  }
+
+  // Se o DOM já carregou, roda a função
+  document.addEventListener('DOMContentLoaded', carregarConta);
+</script>
+
+</body>
+</html>

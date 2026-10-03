@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reparaí - Painel do Técnico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #E6192B;
+      --bg: #F8F9FA;
+      --surface: #FFFFFF;
+      --text: #111111;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); }
+    .header { background: #111; color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { margin: 0; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .logo-box { background: var(--primary); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+    .dashboard-header h2 { margin: 0; font-size: 1.8rem; font-weight: 800; }
+    .dashboard-header p { margin: 5px 0 0; color: var(--text-muted); }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+    .proto-badge { background: rgba(230,25,43,0.1); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; }
+    .date-badge { color: var(--text-muted); font-size: 0.85rem; }
+    
+    .info-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .info-icon { color: var(--text-muted); font-size: 1.1rem; }
+    .info-content strong { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 2px; }
+    .info-content span { font-size: 0.95rem; color: var(--text); font-weight: 500; }
+    
+    .status-area { margin-top: 24px; background: #f8fafc; padding: 16px; border-radius: 12px; border: 1px dashed #cbd5e1; }
+    .status-area label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .status-select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 0.95rem; margin-bottom: 12px; outline: none; }
+    .status-select:focus { border-color: var(--primary); }
+    .btn-update { width: 100%; background: #111; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn-update:hover { background: var(--primary); }
+    
+    .loading { text-align: center; padding: 50px; color: var(--text-muted); font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>
+      <div class="logo-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      Reparaí Admin
+    </h1>
+    <div>Painel de Controle</div>
+  </header>
+
+  <div class="container">
+    <div class="dashboard-header">
+      <div>
+        <h2>Pedidos Recebidos</h2>
+        <p>Gerencie as coletas e status dos equipamentos.</p>
+      </div>
+      <button onclick="carregarPedidos()" style="background:var(--primary);color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;">Atualizar Dados</button>
+    </div>
+    
+    <div id="lista-pedidos" class="grid">
+      <div class="loading">Carregando dados do servidor...</div>
+    </div>
+  </div>
+
+  <script>
+    const ETAPAS = [
+      "Aguardando Confirmação",
+      "Coleta a caminho",
+      "Em Análise",
+      "Aguardando Aprovação",
+      "Em Conserto",
+      "Equipamento retornando",
+      "Entregue"
+    ];
+
+    async function carregarPedidos() {
+      if(!sessionStorage.getItem("admin_auth")) {
+        const pwd = prompt("Digite a senha do administrador:");
+        if(pwd !== "reparai2026") {
+          document.body.innerHTML = "<h2 style='color:red; text-align:center; margin-top:50px;'>Acesso Negado.</h2>";
+          return;
+        }
+        sessionStorage.setItem("admin_auth", "true");
+      }
+      
+      try {
+        const res = await fetch('/api/pedidos');
+        const pedidos = await res.json();
+        const lista = document.getElementById('lista-pedidos');
+        
+        if(pedidos.length === 0) {
+          lista.innerHTML = "<p style='color: #64748B;'>Nenhum pedido recebido ainda.</p>";
+          return;
+        }
+
+        lista.innerHTML = pedidos.map(p => `
+          <div class="card">
+            <div class="card-header">
+              <span class="proto-badge">${p.proto}</span>
+              <span class="date-badge">${new Date(p.criado).toLocaleString('pt-BR')}</span>
+            </div>
+            
+            <div class="info-row">
+              <div class="info-icon">👤</div>
+              <div class="info-content">
+                <strong>Cliente</strong>
+                <span>${p.nome} - ${p.zap}</span>
+              </div>
+            </div>
+            
+            <div class="info-row">
+              <div class="info-icon">📍</div>
+              <div class="info-content">
+                <strong>Endereço de Coleta</strong>
+                <span>${p.endereco}</span>
+              </div>
+            </div>
+            
+            <div class="info-row">
+              <div class="info-icon">💻</div>
+              <div class="info-content">
+                <strong>Equipamento / Relato</strong>
+                <span>${p.equip} - ${p.obs || 'Nenhum relato'}</span>
+              </div>
+            </div>
+            
+            <div class="status-area">
+              <label>Atualizar Status (WhatsApp):</label>
+              <select class="status-select" id="status-${p.proto}">
+                ${ETAPAS.map((etapa, idx) => `<option value="${idx}" ${p.status === idx ? 'selected' : ''}>${idx} - ${etapa}</option>`).join('')}
+              </select>
+              <button class="btn-update" onclick="atualizarStatus('${p.proto}', '${p.zap}')">Salvar e Notificar</button>
+            </div>
+          </div>
+        `).join('');
+      } catch(e) {
+        document.getElementById('lista-pedidos').innerHTML = "<div class='loading'>Erro ao conectar no banco de dados.</div>";
+      }
+    }
+
+    async function atualizarStatus(proto, zap) {
+      const select = document.getElementById(`status-${proto}`);
+      const novoStatus = parseInt(select.value);
+      const nomeStatus = select.options[select.selectedIndex].text.split(' - ')[1];
+      
+      try {
+        await fetch(`/api/pedidos/${proto}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: novoStatus })
+        });
+        
+        if(confirm("Status salvo! Deseja abrir o WhatsApp para avisar o cliente agora?")) {
+           const msg = \`Olá! O status do seu pedido *${proto}* foi atualizado para: *${nomeStatus}*.\`;
+           const zapClean = zap.replace(/\\D/g, '');
+           window.open(\`https://wa.me/55\${zapClean}?text=\${encodeURIComponent(msg)}\`, '_blank');
+        }
+      } catch(e) {
+        alert('Erro ao atualizar status.');
+      }
+    }
+
+    carregarPedidos();
+  </script>
+</body>
+</html>
